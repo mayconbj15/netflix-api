@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Maycon\\Documentos\\codes\\dotnet\\dio\\Netflix.API\\Netflix.API.csproj": {}
+    "D:\\Maycon\\Documentos\\codes\\dotnet\\dio\\Netflix.API\\src\\Netflix.API\\Netflix.API.csproj": {}
   },
   "projects": {
-    "D:\\Maycon\\Documentos\\codes\\dotnet\\dio\\Netflix.API\\Netflix.API.csproj": {
+    "D:\\Maycon\\Documentos\\codes\\dotnet\\dio\\Netflix.API\\src\\Netflix.API\\Netflix.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Maycon\\Documentos\\codes\\dotnet\\dio\\Netflix.API\\Netflix.API.csproj",
+        "projectUniqueName": "D:\\Maycon\\Documentos\\codes\\dotnet\\dio\\Netflix.API\\src\\Netflix.API\\Netflix.API.csproj",
         "projectName": "Netflix.API",
-        "projectPath": "D:\\Maycon\\Documentos\\codes\\dotnet\\dio\\Netflix.API\\Netflix.API.csproj",
+        "projectPath": "D:\\Maycon\\Documentos\\codes\\dotnet\\dio\\Netflix.API\\src\\Netflix.API\\Netflix.API.csproj",
         "packagesPath": "C:\\Users\\PICHAU\\.nuget\\packages\\",
-        "outputPath": "D:\\Maycon\\Documentos\\codes\\dotnet\\dio\\Netflix.API\\obj\\",
+        "outputPath": "D:\\Maycon\\Documentos\\codes\\dotnet\\dio\\Netflix.API\\src\\Netflix.API\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\PICHAU\\AppData\\Roaming\\NuGet\\NuGet.Config"
