@@ -1,10 +1,13 @@
 using System;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 
 namespace Netflix.API.Models.Database
 {
     public abstract class Entity
     {
-        public string Id { get; set; }
+        [Key]
+        public int Id { get; set; }
 
         public DateTime CreatedOn { get; set; }
 

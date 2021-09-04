@@ -1,1 +1,3 @@
-/obj
+/src/Netflix.API/bin/
+/src/Netflix.API/obj
+/src/Netflix.API/.vscode
