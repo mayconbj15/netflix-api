@@ -4,7 +4,7 @@ using Netflix.API.Repositories;
 
 namespace Netflix.API.Services
 {
-    public class CRUDService<T> where T : DbContext
+    public class CRUDService<T> : ICRUDService<T> where T : DbContext
     {
         private readonly T _context;
 
@@ -15,7 +15,6 @@ namespace Netflix.API.Services
 
         public async Task<D> GetObjectById<D>(int id)
         {
-
             return (D)await _context.FindAsync(typeof(D), id);
         }
 

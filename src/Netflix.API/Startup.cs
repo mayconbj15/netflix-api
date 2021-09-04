@@ -39,9 +39,9 @@ namespace Netflix.API
                 .Options;
 
             var movieContext = new MovieContext(movieContextOptions);
-            services.AddScoped<DbContext>((sp) => movieContext);
+            services.AddScoped<MovieContext>((sp) => movieContext);
 
-            services.AddScoped<CRUDService<MovieContext>>((sp) => new CRUDService<MovieContext>(movieContext));
+            services.AddScoped<ICRUDService<MovieContext>>((sp) => new CRUDService<MovieContext>(movieContext));
 
             services.AddSwaggerGen(c =>
             {

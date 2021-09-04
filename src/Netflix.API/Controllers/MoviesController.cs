@@ -11,9 +11,9 @@ namespace Netflix.API.Controllers
     [ApiController]
     public class MoviesController : ControllerBase
     {
-        private readonly CRUDService<MovieContext> _crudService;
+        private readonly ICRUDService<MovieContext> _crudService;
 
-        public MoviesController(CRUDService<MovieContext> crudService)
+        public MoviesController(ICRUDService<MovieContext> crudService)
         {
             _crudService = crudService;
         }
