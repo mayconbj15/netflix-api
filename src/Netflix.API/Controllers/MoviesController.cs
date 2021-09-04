@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Netflix.API.Models.Database;
 using Netflix.API.Repositories;
+using Netflix.API.Services;
 
 namespace Netflix.API.Controllers
 {
@@ -10,11 +11,11 @@ namespace Netflix.API.Controllers
     [ApiController]
     public class MoviesController : ControllerBase
     {
-        private readonly MovieContext _movieContext;
+        private readonly CRUDService<MovieContext> _crudService;
 
-        public MoviesController(MovieContext movieContext)
+        public MoviesController(CRUDService<MovieContext> crudService)
         {
-            _movieContext = movieContext;
+            _crudService = crudService;
         }
 
         [HttpPost]
@@ -22,8 +23,7 @@ namespace Netflix.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _movieContext.AddAsync(movie);
-                await _movieContext.SaveChangesAsync();
+                await _crudService.Create(movie);
 
                 return Created($"api/movies/{movie.Id}", movie);
             }
@@ -34,8 +34,8 @@ namespace Netflix.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Read(int id)
         {
-            var movie = await _movieContext.Movies
-                .FirstOrDefaultAsync(m => m.Id == id);
+            //GetObjectById
+            var movie = await _crudService.GetObjectById<Movie>(id);
 
             return Ok(movie);
         }
@@ -44,13 +44,12 @@ namespace Netflix.API.Controllers
         [Route("/{id:int}")]
         public async Task<IActionResult> Update(int id, [FromBody] Movie movie)
         {
-            var dbMoviel = await _movieContext.Movies
-                .FirstOrDefaultAsync(m => m.Id == id);
+            //GetObjectById
+            var dbMoviel = await _crudService.GetObjectById<Movie>(id);
 
             if (dbMoviel != default(Movie))
             {
-                _movieContext.Update(movie);
-                await _movieContext.SaveChangesAsync();
+                await _crudService.Update(movie);
 
                 return Ok(movie);
             }
@@ -64,13 +63,11 @@ namespace Netflix.API.Controllers
         [Route("/{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var movie = await _movieContext.Movies
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var movie = await _crudService.GetObjectById<Movie>(id);
 
             if (movie != default(Movie))
             {
-                _movieContext.Remove(movie);
-                await _movieContext.SaveChangesAsync();
+                await _crudService.Delete(movie);
 
                 return Ok(movie);
             }

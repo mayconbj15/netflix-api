@@ -14,6 +14,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Netflix.API.Repositories;
+using Netflix.API.Services;
 
 namespace Netflix.API
 {
@@ -33,7 +34,14 @@ namespace Netflix.API
                 .AddJsonOptions(options =>
                     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
-            services.AddDbContext<MovieContext>(c => c.UseInMemoryDatabase("TestBase"));
+            var movieContextOptions = new DbContextOptionsBuilder<MovieContext>()
+                .UseInMemoryDatabase("TestBase")
+                .Options;
+
+            var movieContext = new MovieContext(movieContextOptions);
+            services.AddScoped<DbContext>((sp) => movieContext);
+
+            services.AddScoped<CRUDService<MovieContext>>((sp) => new CRUDService<MovieContext>(movieContext));
 
             services.AddSwaggerGen(c =>
             {

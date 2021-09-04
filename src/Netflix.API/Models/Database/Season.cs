@@ -5,6 +5,7 @@ namespace Netflix.API.Models.Database
     public class Season : Entity
     {
         public int SerieId { get; set; }
+        public Serie Serie { get; set; }
 
         public int SerialNumber { get; set; }
 
