@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -16,7 +18,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-
+using Netflix.API.Models;
 using Netflix.API.Repositories.Configurations;
 using Newtonsoft.Json;
 
@@ -45,8 +47,25 @@ namespace Netflix.API
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Netflix.API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Netflix.API",
+                    Version = "v1",
+                    Description = "A web api based on netflix movie and series models",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Maycon Bruno de Jesus",
+                        Email = "mayconbj15@gmail.com",
+                        Url = new Uri("https://github.com/mayconbj15"),
+                    }
+                });
                 c.ResolveConflictingActions(api => api.First()); //Fix #3
+                c.EnableAnnotations();
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
+
+
             });
         }
 
@@ -57,7 +76,11 @@ namespace Netflix.API
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Netflix.API v1"));
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Netflix.API v1");
+                    c.RoutePrefix = string.Empty;
+                });
             }
 
             app.UseExceptionHandler(errorApp =>
@@ -69,11 +92,13 @@ namespace Netflix.API
                     var exceptionHandlerPathFeature =
                         context.Features.Get<IExceptionHandlerPathFeature>();
 
-                    var json = new Dictionary<string, string>();
-                    json.Add("message", exceptionHandlerPathFeature.Error.Message);
-                    json.Add("inner exception", exceptionHandlerPathFeature.Error.InnerException.Message);
-
-                    await context.Response.WriteAsync(JsonConvert.SerializeObject(json));
+                    await context.Response.WriteAsync(JsonConvert.SerializeObject(
+                        new ExceptionResponse()
+                        {
+                            Message = exceptionHandlerPathFeature.Error.Message,
+                            InnerExceptionMessage = exceptionHandlerPathFeature.Error.InnerException.Message
+                        }
+                    ));
                 });
             });
             app.UseHttpsRedirection();
