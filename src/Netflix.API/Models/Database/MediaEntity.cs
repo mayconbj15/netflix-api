@@ -6,6 +6,7 @@ namespace Netflix.API.Models.Database
     public abstract class MediaEntity : Entity
     {
         [MaxLength(300)]
+        [Required]
         public string Title { get; set; }
 
         public int Year { get; set; }

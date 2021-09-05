@@ -38,8 +38,8 @@ namespace Netflix.API
                     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter())
                 );
 
-            services.AddMovieCrudService();
-            services.AddSerieCrudService();
+            services.AddMovieCrudService(Configuration["ConnectionString:PostgreSQLNetflixDatabase"]);
+            services.AddSerieCrudService(Configuration["ConnectionString:PostgreSQLNetflixDatabase"]);
 
             services.AddSwaggerGen(c =>
             {

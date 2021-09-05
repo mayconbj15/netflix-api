@@ -8,7 +8,7 @@ namespace Netflix.API.Models.Database
 
         public string Title { get; set; }
 
-        public TimeSpan Duration { get; set; }
+        public long DurationTicks { get; set; }
 
         public string Synopsis { get; set; }
     }
