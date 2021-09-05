@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Netflix.API.Repositories;
@@ -11,6 +12,11 @@ namespace Netflix.API.Services
         public CRUDService(T context)
         {
             _context = context;
+        }
+
+        public async Task<IEnumerable<D>> GetAll<D>() where D : class
+        {
+            return await _context.Set<D>().ToListAsync();
         }
 
         public async Task<D> GetObjectById<D>(int id)

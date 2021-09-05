@@ -17,6 +17,12 @@ namespace Netflix.API.Controllers
             _crudService = crudService;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> All()
+        {
+            return Ok(await _crudService.GetAll<Season>());
+        }
+
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] Season season)
         {
@@ -24,7 +30,7 @@ namespace Netflix.API.Controllers
             {
                 await _crudService.Create(season);
 
-                return Created($"api/season/{season.Id}", season);
+                return Created($"api/seasons/{season.Id}", season);
             }
 
             return BadRequest();

@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Netflix.API.Models.Database;
 using Netflix.API.Repositories;
 using Netflix.API.Services;
@@ -16,6 +15,12 @@ namespace Netflix.API.Controllers
         public SeriesController(ICRUDService<SerieContext> crudService)
         {
             _crudService = crudService;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> All()
+        {
+            return Ok(await _crudService.GetAll<Serie>());
         }
 
         [HttpPost]

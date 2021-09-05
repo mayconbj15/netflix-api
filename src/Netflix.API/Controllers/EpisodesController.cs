@@ -8,11 +8,11 @@ namespace Netflix.API.Controllers
 {
     [Route("/api/[controller]/[action]")]
     [ApiController]
-    public class MoviesController : ControllerBase
+    public class EpisodesController : ControllerBase
     {
-        private readonly ICRUDService<MovieContext> _crudService;
+        private readonly ICRUDService<SerieContext> _crudService;
 
-        public MoviesController(ICRUDService<MovieContext> crudService)
+        public EpisodesController(ICRUDService<SerieContext> crudService)
         {
             _crudService = crudService;
         }
@@ -20,17 +20,17 @@ namespace Netflix.API.Controllers
         [HttpGet]
         public async Task<IActionResult> All()
         {
-            return Ok(await _crudService.GetAll<Movie>());
+            return Ok(await _crudService.GetAll<Episode>());
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] Movie movie)
+        public async Task<IActionResult> Create([FromBody] Episode episode)
         {
             if (ModelState.IsValid)
             {
-                await _crudService.Create(movie);
+                await _crudService.Create(episode);
 
-                return Created($"api/movies/{movie.Id}", movie);
+                return Created($"api/seasons/{episode.Id}", episode);
             }
 
             return BadRequest();
@@ -39,22 +39,22 @@ namespace Netflix.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Read(int id)
         {
-            var movie = await _crudService.GetObjectById<Movie>(id);
+            var episode = await _crudService.GetObjectById<Episode>(id);
 
-            return Ok(movie);
+            return Ok(episode);
         }
 
         [HttpPatch]
         [Route("{id:int}")]
-        public async Task<IActionResult> Update(int id, [FromBody] Movie movie)
+        public async Task<IActionResult> Update(int id, [FromBody] Episode episode)
         {
-            var dbMoviel = await _crudService.GetObjectById<Movie>(id);
+            var dbEpisode = await _crudService.GetObjectById<Episode>(id);
 
-            if (dbMoviel != default(Movie))
+            if (dbEpisode != default(Episode))
             {
-                await _crudService.Update(movie);
+                await _crudService.Update(episode);
 
-                return Ok(movie);
+                return Ok(episode);
             }
             else
             {
@@ -66,13 +66,13 @@ namespace Netflix.API.Controllers
         [Route("{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var movie = await _crudService.GetObjectById<Movie>(id);
+            var episode = await _crudService.GetObjectById<Episode>(id);
 
-            if (movie != default(Movie))
+            if (episode != default(Episode))
             {
-                await _crudService.Delete(movie);
+                await _crudService.Delete(episode);
 
-                return Ok(movie);
+                return Ok(episode);
             }
             else
             {

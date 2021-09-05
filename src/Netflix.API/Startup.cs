@@ -5,6 +5,7 @@ using System.Net;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -17,6 +18,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 
 using Netflix.API.Repositories.Configurations;
+using Newtonsoft.Json;
 
 namespace Netflix.API
 {
@@ -64,7 +66,14 @@ namespace Netflix.API
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-                    await context.Response.WriteAsync("Internal server error");
+                    var exceptionHandlerPathFeature =
+                        context.Features.Get<IExceptionHandlerPathFeature>();
+
+                    var json = new Dictionary<string, string>();
+                    json.Add("message", exceptionHandlerPathFeature.Error.Message);
+                    json.Add("inner exception", exceptionHandlerPathFeature.Error.InnerException.Message);
+
+                    await context.Response.WriteAsync(JsonConvert.SerializeObject(json));
                 });
             });
             app.UseHttpsRedirection();
