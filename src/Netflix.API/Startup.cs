@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,8 +15,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using Netflix.API.Repositories;
-using Netflix.API.Services;
+
+using Netflix.API.Repositories.Configurations;
 
 namespace Netflix.API
 {
@@ -30,22 +32,19 @@ namespace Netflix.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //Fix #2
             services.AddControllers()
                 .AddJsonOptions(options =>
-                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter())
+                );
 
-            var movieContextOptions = new DbContextOptionsBuilder<MovieContext>()
-                .UseInMemoryDatabase("TestBase")
-                .Options;
-
-            var movieContext = new MovieContext(movieContextOptions);
-            services.AddScoped<MovieContext>((sp) => movieContext);
-
-            services.AddScoped<ICRUDService<MovieContext>>((sp) => new CRUDService<MovieContext>(movieContext));
+            services.AddMovieCrudService();
+            services.AddSerieCrudService();
 
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Netflix.API", Version = "v1" });
+                c.ResolveConflictingActions(api => api.First()); //Fix #3
             });
         }
 
@@ -59,6 +58,15 @@ namespace Netflix.API
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Netflix.API v1"));
             }
 
+            app.UseExceptionHandler(errorApp =>
+            {
+                errorApp.Run(async context =>
+                {
+                    context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+
+                    await context.Response.WriteAsync("Internal server error");
+                });
+            });
             app.UseHttpsRedirection();
 
             app.UseRouting();
